@@ -253,6 +253,9 @@ HideOneDriveFileExplorerAd
 #endregion OneDrive
 #region Performance
 function Performance {
+	if (!(Test-Path "HKCU:\AppEvents\Schemes")) {
+		New-Item -Path "HKCU:\AppEvents\Schemes" -Force
+	}	
 	if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched")) {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched" -Force
 	}
