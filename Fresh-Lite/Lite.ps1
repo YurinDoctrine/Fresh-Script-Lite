@@ -32,7 +32,7 @@ Check
 function ChocolateyPackageManager {
 	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'cacheLocation'" --value="'C:\temp\chococache'"; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst pswindowsupdate directx; cinst --ignore-checksums pswindowsupdate directx; Get-WindowsUpdate -NotCategory "Upgrades", "Silverlight" -NotTitle Preview -MicrosoftUpdate -AcceptAll -IgnoreReboot -Verbose; cinst 7zip.install notepadplusplus.install; cinst --ignore-checksums 7zip.install notepadplusplus.install
 }
-#ChocolateyPackageManager
+ChocolateyPackageManager
 #endregion Chocolatey
 #region O&OShutup
 function OOShutup {
