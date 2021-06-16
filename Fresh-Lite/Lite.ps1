@@ -252,7 +252,10 @@ function HideOneDriveFileExplorerAd {
 HideOneDriveFileExplorerAd
 #endregion OneDrive
 #region Performance
-
+function Performance {
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "IRPStackSize" -Type DWord -Value 32 -Force
+}
+Performance
 #endregion Performance
 function Errors {
 	if ($Global:Error) {
