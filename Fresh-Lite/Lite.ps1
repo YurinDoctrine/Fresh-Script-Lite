@@ -1,0 +1,269 @@
+# Checking
+# Проверка
+function Check {
+	Set-StrictMode -Version Latest
+
+	# Сlear the $Error variable
+	# Очистка переменной $Error
+	$Global:Error.Clear()
+
+	# Detect the OS bitness
+	# Определить разрядность ОС
+	switch ([Environment]::Is64BitOperatingSystem) {
+		$false {
+			Write-Warning -Message "The script supports Windows 10 x64 only"
+			break
+		}
+	}
+
+	# Turn off Controlled folder access to let the script proceed
+	# Выключить контролируемый доступ к папкам
+	switch ((Get-MpPreference).EnableControlledFolderAccess -eq 1) {
+		$true {
+			Write-Warning -Message "Controlled folder access disabled"
+			Set-MpPreference -EnableControlledFolderAccess Disabled
+		}
+	}
+	Read-Host 'Please make sure your network connection is available... [HIT RETURN]'
+}
+Check
+#region Chocolatey
+# Install Chocolatey package manager and pre-installs as well
+function ChocolateyPackageManager {
+	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'cacheLocation'" --value="'C:\temp\chococache'"; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst pswindowsupdate directx; cinst --ignore-checksums pswindowsupdate directx; Get-WindowsUpdate -NotCategory "Upgrades", "Silverlight" -NotTitle Preview -MicrosoftUpdate -AcceptAll -IgnoreReboot -Verbose; cinst 7zip.install notepadplusplus.install; cinst --ignore-checksums 7zip.install notepadplusplus.install
+}
+#ChocolateyPackageManager
+#endregion Chocolatey
+#region O&OShutup
+function OOShutup {
+	Write-Warning -Message "Running O&O Shutup with Recommended Settings" -Verbose
+	Import-Module BitsTransfer
+	Start-BitsTransfer -Source "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe" -Destination OOSU10.exe
+	./OOSU10.exe ooshutup.cfg /quiet
+}
+OOShutup
+#endregion O&OShutup
+#region UWP apps
+<#
+	Uninstall UWP apps
+	A dialog box that enables the user to select packages to remove
+	App packages will not be installed for new users if "Uninstall for All Users" is checked
+	Add UWP apps packages names to the $UncheckedAppXPackages array list by retrieving their packages names using the following command:
+		(Get-AppxPackage -PackageTypeFilter Bundle -AllUsers).Name
+
+	Удалить UWP-приложения
+	Диалоговое окно, позволяющее пользователю отметить пакеты на удаление
+	Приложения не будут установлены для новых пользователе, если отмечено "Удалять для всех пользователей"
+	Добавьте имена пакетов UWP-приложений в массив $UncheckedAppXPackages, получив названия их пакетов с помощью команды:
+		(Get-AppxPackage -PackageTypeFilter Bundle -AllUsers).Name
+#>
+function UninstallUWPApps {
+	# UWP apps that won't be shown in the form
+	# UWP-приложения, которые не будут выводиться в форме
+	$ExcludedAppxPackages = @(
+
+		# Microsoft Store
+		"Microsoft.WindowsStore",
+		
+		# AMD Radeon UWP panel
+		# UWP-панель AMD Radeon
+		"AdvancedMicroDevicesInc*",
+
+		# NVIDIA Control Panel
+		# Панель управления NVidia
+		"NVIDIACorp.NVIDIAControlPanel",
+
+		# Realtek Audio Control
+		"RealtekSemiconductorCorp.RealtekAudioControl"
+		
+	)
+	
+	if (Get-AppxPackage -PackageTypeFilter Bundle -AllUsers | Where-Object -FilterScript { $_.Name -cnotmatch ($ExcludedAppxPackages -join "|") } | Remove-AppxPackage -AllUsers ) {
+		Write-Verbose -Message 'Removed UWP apps' -Verbose
+	}
+ else {
+		Write-Verbose -Message "Nothing to do" -Verbose
+	}
+}
+UninstallUWPApps
+# Do not let UWP apps run in the background, except the followings... (current user only)
+# Не разрешать UWP-приложениям работать в фоновом режиме, кроме следующих... (только для текущего пользователя)
+function DisableBackgroundUWPApps {
+	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications -Name GlobalUserDisabled -PropertyType DWord -Value 1 -Force
+	Get-ChildItem -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications | ForEach-Object -Process {
+		Remove-ItemProperty -Path $_.PsPath -Name * -Force
+	}
+
+	$ExcludedBackgroundApps = @(
+
+		# Windows Search
+		"Microsoft.Windows.Search",
+
+		# Windows Security
+		# Безопасность Windows
+		"Microsoft.Windows.SecHealthUI",
+
+		# Microsoft Store
+		"Microsoft.WindowsStore"
+	)
+	$OFS = "|"
+	Get-ChildItem -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications | Where-Object -FilterScript { $_.PSChildName -notmatch "^$($ExcludedBackgroundApps.ForEach({[regex]::Escape($_)}))" } | ForEach-Object -Process {
+		New-ItemProperty -Path $_.PsPath -Name Disabled -PropertyType DWord -Value 1 -Force
+		New-ItemProperty -Path $_.PsPath -Name DisabledByUser -PropertyType DWord -Value 1 -Force
+	}
+	$OFS = " "
+}
+DisableBackgroundUWPApps
+# Disable the following Windows features
+# Отключить следующие компоненты Windows
+function DisableWindowsFeatures {
+	$WindowsOptionalFeatures = @(
+		# Media Features
+		# Компоненты работы с мультимедиа
+		"MediaPlayback",
+
+		# Work Folders Client
+		# Клиент рабочих папок
+		"WorkFolders-Client"
+	)
+	Disable-WindowsOptionalFeature -Online -FeatureName $WindowsOptionalFeatures -NoRestart
+}
+DisableWindowsFeatures
+# Disable certain Feature On Demand v2 (FODv2) capabilities
+# Отключить определенные компоненты "Функции по требованию" (FODv2)
+function DisableWindowsCapabilities {
+	# The following FODv2 items will be shown, but their checkboxes would be clear
+	# Следующие дополнительные компоненты будут видны, но их чекбоксы не будут отмечены
+	$ExcludedCapabilities = @(
+		# The DirectX Database to configure and optimize apps when multiple Graphics Adapters are present
+		# База данных DirectX для настройки и оптимизации приложений при наличии нескольких графических адаптеров
+		"DirectX.Configuration.Database*",
+
+		# Language components
+		"Language.*"
+	)
+	
+	if (Get-WindowsCapability -Online | Where-Object -FilterScript { ($_.State -eq "Installed") -and ($_.Name -cnotmatch ($ExcludedCapabilities -join "|")) } | Remove-WindowsCapability -Online ) {
+		Write-Verbose -Message 'Removed Capabilities' -Verbose
+	}
+ else {
+		Write-Verbose -Message "Nothing to do" -Verbose
+	}
+}
+DisableWindowsCapabilities
+# Turn off Cortana autostarting
+# Удалить Кортана из автозагрузки
+function DisableCortanaAutostart {
+	if (Get-AppxPackage -Name Microsoft.549981C3F5F10) {
+		if (-not (Test-Path -Path "Registry::HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.549981C3F5F10_8wekyb3d8bbwe\CortanaStartupId")) {
+			New-Item -Path "Registry::HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.549981C3F5F10_8wekyb3d8bbwe\CortanaStartupId" -Force
+		}
+		New-ItemProperty -Path "Registry::HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.549981C3F5F10_8wekyb3d8bbwe\CortanaStartupId" -Name State -PropertyType DWord -Value 1 -Force
+	}
+}
+DisableCortanaAutostart
+#endregion UWP apps
+#region OneDrive
+# Uninstall OneDrive
+# Удалить OneDrive
+function UninstallOneDrive {
+	[string]$UninstallString = Get-Package -Name "Microsoft OneDrive" -ProviderName Programs -ErrorAction Ignore | ForEach-Object -Process { $_.Meta.Attributes["UninstallString"] }
+	if ($UninstallString) {
+		Write-Verbose -Message "Uninstalling OneDrive..." -Verbose
+		Stop-Process -Name OneDrive -Force -ErrorAction Ignore
+		Stop-Process -Name OneDriveSetup -Force -ErrorAction Ignore
+		Stop-Process -Name FileCoAuth -Force -ErrorAction Ignore
+
+		# Getting link to the OneDriveSetup.exe and its' argument(s)
+		# Получаем ссылку на OneDriveSetup.exe и его аргумент(ы)
+		[string[]]$OneDriveSetup = ($UninstallString -Replace ("\s*/", ",/")).Split(",").Trim()
+		if ($OneDriveSetup.Count -eq 2) {
+			Start-Process -FilePath $OneDriveSetup[0] -ArgumentList $OneDriveSetup[1..1] -Wait
+		}
+		else {
+			Start-Process -FilePath $OneDriveSetup[0] -ArgumentList $OneDriveSetup[1..2] -Wait
+		}
+
+		# Getting the OneDrive user folder path
+		# Получаем путь до папки пользователя OneDrive
+		$OneDriveUserFolder = Get-ItemPropertyValue -Path HKCU:\Environment -Name OneDrive
+		if ((Get-ChildItem -Path $OneDriveUserFolder | Measure-Object).Count -eq 0) {
+			Remove-Item -Path $OneDriveUserFolder -Recurse -Force
+		}
+		else {
+			$Message = Invoke-Command -ScriptBlock ([ScriptBlock]::Create("The $OneDriveUserFolder folder is not empty Delete it manually"))
+			Write-Error -Message $Message -ErrorAction SilentlyContinue
+			Invoke-Item -Path $OneDriveUserFolder
+		}
+
+		Remove-ItemProperty -Path HKCU:\Environment -Name OneDrive, OneDriveConsumer -Force -ErrorAction Ignore
+		Remove-Item -Path HKCU:\SOFTWARE\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path "$env:ProgramData\Microsoft OneDrive" -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path $env:SystemDrive\OneDriveTemp -Recurse -Force -ErrorAction Ignore
+		Unregister-ScheduledTask -TaskName *OneDrive* -Confirm:$false
+
+		# Getting the OneDrive folder path
+		# Получаем путь до папки OneDrive
+		$OneDriveFolder = Split-Path -Path (Split-Path -Path $OneDriveSetup[0] -Parent)
+
+		# Save all opened folders in order to restore them after File Explorer restarting
+		# Сохранить все открытые папки, чтобы восстановить их после перезапуска проводника
+		Clear-Variable -Name OpenedFolders -Force -ErrorAction Ignore
+		$OpenedFolders = { (New-Object -ComObject Shell.Application).Windows() | ForEach-Object -Process { $_.Document.Folder.Self.Path } }.Invoke()
+        
+		# Restart explorer process
+		TASKKILL /F /IM explorer.exe
+		Start-Process "explorer.exe"
+		
+		# Attempt to unregister FileSyncShell64.dll and remove
+		# Попытка разрегистрировать FileSyncShell64.dll и удалить
+		$FileSyncShell64dlls = Get-ChildItem -Path "$OneDriveFolder\*\amd64\FileSyncShell64.dll" -Force
+		foreach ($FileSyncShell64dll in $FileSyncShell64dlls.FullName) {
+			Start-Process -FilePath regsvr32.exe -ArgumentList "/u /s $FileSyncShell64dll" -Wait
+			Remove-Item -Path $FileSyncShell64dll -Force -ErrorAction Ignore
+
+			if (Test-Path -Path $FileSyncShell64dll) {
+				$Message = Invoke-Command -ScriptBlock ([ScriptBlock]::Create("$FileSyncShell64dll is blocked Delete it manually"))
+				Write-Error -Message $Message -ErrorAction SilentlyContinue
+			}
+		}
+
+		# Restoring closed folders
+		# Восстановляем закрытые папки
+		foreach ($OpenedFolder in $OpenedFolders) {
+			if (Test-Path -Path $OpenedFolder) {
+				Invoke-Item -Path $OpenedFolder
+			}
+		}
+
+		Remove-Item -Path $OneDriveFolder -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path $env:LOCALAPPDATA\OneDrive -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path $env:LOCALAPPDATA\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" -Force -ErrorAction Ignore
+	}
+}
+UninstallOneDrive
+# Do not show sync provider notification within File Explorer (current user only)
+# Не показывать уведомления поставщика синхронизации в проводнике (только для текущего пользователя)
+function HideOneDriveFileExplorerAd {
+	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name ShowSyncProviderNotifications -PropertyType DWord -Value 0 -Force
+}
+HideOneDriveFileExplorerAd
+#endregion OneDrive
+#region Performance
+
+#endregion Performance
+function Errors {
+	if ($Global:Error) {
+		($Global:Error | ForEach-Object -Process {
+				[PSCustomObject] @{
+					Line    = $_.InvocationInfo.ScriptLineNumber
+					File    = Split-Path -Path $PSCommandPath -Leaf
+					'Errors/Warnings' = $_.Exception.Message
+				}
+			} | Sort-Object -Property Line | Format-Table -AutoSize -Wrap | Out-File -FilePath $HOME\Documents\errorlog.txt
+		)
+	}
+}
+Errors
