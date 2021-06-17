@@ -342,7 +342,6 @@ function Memory {
 	fsutil behavior set memoryusage 1
 	fsutil behavior set disablelastaccess 1
 	fsutil behavior set mftzone 3
-
 }
 Memory
 #endregion Performance
