@@ -341,6 +341,7 @@ Network
 function Memory {
 	fsutil behavior set memoryusage 1
 }
+Memory
 #endregion Performance
 #region Chocolatey
 # Install Chocolatey package manager and pre-installs as well
