@@ -324,6 +324,7 @@ function Network {
 	netsh int tcp set global dca=enabled
 	netsh int tcp set global autotuninglevel=Normal
 }
+Network
 #endregion Performance
 #region Chocolatey
 # Install Chocolatey package manager and pre-installs as well
