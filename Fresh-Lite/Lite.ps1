@@ -11,7 +11,7 @@ function Check {
 	# Определить разрядность ОС
 	switch ([Environment]::Is64BitOperatingSystem) {
 		$false {
-			Write-Warning -Message "The script supports Windows 10 x64 only"
+			Write-Warning -Message "The script supports Windows 10 x64 only" -Verbose
 			break
 		}
 	}
@@ -20,7 +20,7 @@ function Check {
 	# Выключить контролируемый доступ к папкам
 	switch ((Get-MpPreference).EnableControlledFolderAccess -eq 1) {
 		$true {
-			Write-Warning -Message "Controlled folder access disabled"
+			Write-Warning -Message "Controlled folder access disabled" -Verbose
 			Set-MpPreference -EnableControlledFolderAccess Disabled
 		}
 	}
