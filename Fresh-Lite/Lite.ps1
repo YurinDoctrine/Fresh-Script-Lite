@@ -323,10 +323,7 @@ Performance
 function FixTimers {
 	bcdedit /set `{current`} useplatformtick true
 	bcdedit /set `{current`} disabledynamictick true
-	bcdedit /set `{current`} tscsyncpolicy Legacy
-	bcdedit /set `{current`} x2apicpolicy Disable
-	bcdedit /set `{current`} uselegacyapicmode Yes
-	bcdedit /set `{current`} debug No
+	bcdedit /set `{current`} tscsyncpolicy legacy
 	bcdedit /deletevalue `{current`} useplatformclock
 }
 FixTimers
