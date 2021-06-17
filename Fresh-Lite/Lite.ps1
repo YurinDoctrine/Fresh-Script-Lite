@@ -329,7 +329,7 @@ Network
 #region Chocolatey
 # Install Chocolatey package manager and pre-installs as well
 function ChocolateyPackageManager {
-	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst pswindowsupdate directx; cinst --ignore-checksums pswindowsupdate directx; Get-WindowsUpdate -NotCategory "Upgrades", "Silverlight" -NotTitle Preview -MicrosoftUpdate -Download -AcceptAll -IgnoreReboot -Verbose; cinst 7zip.install notepadplusplus.install; cinst --ignore-checksums 7zip.install notepadplusplus.install
+	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst pswindowsupdate dotnetfx; cinst --ignore-checksums pswindowsupdate dotnetfx; Get-WindowsUpdate -NotCategory "Upgrades", "Silverlight" -NotTitle Preview -MicrosoftUpdate -Download -AcceptAll -IgnoreReboot -Verbose; cinst 7zip.install notepadplusplus.install; cinst --ignore-checksums 7zip.install notepadplusplus.install
 }
 ChocolateyPackageManager
 #endregion Chocolatey
