@@ -370,8 +370,8 @@ function Errors {
 	if ($Global:Error) {
 		($Global:Error | ForEach-Object -Process {
 				[PSCustomObject] @{
-					Line    = $_.InvocationInfo.ScriptLineNumber
-					File    = Split-Path -Path $PSCommandPath -Leaf
+					Line              = $_.InvocationInfo.ScriptLineNumber
+					File              = Split-Path -Path $PSCommandPath -Leaf
 					'Errors/Warnings' = $_.Exception.Message
 				}
 			} | Sort-Object -Property Line | Format-Table -AutoSize -Wrap | Out-File -FilePath $HOME\Documents\errorlog.txt
