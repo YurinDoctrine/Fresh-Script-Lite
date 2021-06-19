@@ -333,9 +333,13 @@ function FixTimers {
 }
 FixTimers
 function Network {
+	netsh int tcp set global timestamps=disabled
+	netsh int tcp set heuristics disabled
 	netsh int tcp set global netdma=enabled
 	netsh int tcp set global dca=enabled
-	netsh int tcp set global autotuninglevel=Normal
+	netsh int tcp set global autotuninglevel=disabled
+	netsh int tcp set supplemental template=internet congestionprovider=ctcp
+	netsh int tcp set global rss=enabled
 }
 Network
 function Memory {
@@ -348,7 +352,7 @@ Memory
 #region Chocolatey
 # Install Chocolatey package manager and pre-installs as well
 function ChocolateyPackageManager {
-	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst pswindowsupdate dotnetfx; cinst --ignore-checksums pswindowsupdate dotnetfx; Get-WindowsUpdate -NotCategory "Upgrades", "Silverlight" -NotTitle Preview -MicrosoftUpdate -Download -AcceptAll -IgnoreReboot -Verbose; cinst 7zip.install notepadplusplus.install; cinst --ignore-checksums 7zip.install notepadplusplus.install
+	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst dotnetfx; cinst --ignore-checksums dotnetfx; cinst 7zip.install notepadplusplus.install; cinst --ignore-checksums 7zip.install notepadplusplus.install
 }
 ChocolateyPackageManager
 #endregion Chocolatey
