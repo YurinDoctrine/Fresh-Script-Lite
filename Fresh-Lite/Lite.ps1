@@ -59,11 +59,9 @@ function UninstallUWPApps {
 		"Microsoft.WindowsStore",
 		
 		# AMD Radeon UWP panel
-		# UWP-панель AMD Radeon
 		"AdvancedMicroDevicesInc*",
 
 		# NVIDIA Control Panel
-		# Панель управления NVidia
 		"NVIDIACorp.NVIDIAControlPanel",
 
 		# Realtek Audio Control
@@ -93,7 +91,6 @@ function DisableBackgroundUWPApps {
 		"Microsoft.Windows.Search",
 
 		# Windows Security
-		# Безопасность Windows
 		"Microsoft.Windows.SecHealthUI",
 
 		# Microsoft Store
@@ -323,6 +320,9 @@ function Performance {
 	New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" -Name "Priority" -PropertyType DWord -Value 8 -Force
 	New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" -Name "NoLazyMode" -PropertyType String -Value 1 -Force
 	New-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer -Name "WaitToKillServiceTimeout" -PropertyType String -Value 1000 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control" -Name CoalescingTimerInterval -Type "DWORD" -Value "0" -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name CoalescingTimerInterval -Type "DWORD" -Value "0" -Force
+	New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\Power" -Name SleepStudyDisabled -Type "DWORD" -Value "1" -Force
 }
 Performance
 function FixTimers {
