@@ -27,6 +27,13 @@ function Check {
 	Read-Host 'Please make sure your network connection is available... [HIT RETURN]'
 }
 Check
+#region Chocolatey
+# Install Chocolatey package manager and pre-installs as well
+function ChocolateyPackageManager {
+	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst dotnetfx; cinst --ignore-checksums dotnetfx; cinst 7zip.install notepadplusplus.install; cinst --ignore-checksums 7zip.install notepadplusplus.install
+}
+ChocolateyPackageManager
+#endregion Chocolatey
 #region O&OShutup
 function OOShutup {
 	Write-Warning -Message "Running O&O Shutup with Recommended Settings" -Verbose
@@ -359,13 +366,6 @@ function Memory {
 }
 Memory
 #endregion Performance
-#region Chocolatey
-# Install Chocolatey package manager and pre-installs as well
-function ChocolateyPackageManager {
-	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst dotnetfx; cinst --ignore-checksums dotnetfx; cinst 7zip.install notepadplusplus.install; cinst --ignore-checksums 7zip.install notepadplusplus.install
-}
-ChocolateyPackageManager
-#endregion Chocolatey
 function Errors {
 	if ($Global:Error) {
 		($Global:Error | ForEach-Object -Process {
