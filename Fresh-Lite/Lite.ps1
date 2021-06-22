@@ -27,19 +27,10 @@ function Check {
 	Read-Host 'Please make sure your network connection is available... [HIT RETURN]'
 }
 Check
-#region O&OShutup
-function OOShutup {
-	Write-Warning -Message "Running O&O Shutup with Recommended Settings" -Verbose
-	Import-Module BitsTransfer
-	Start-BitsTransfer -Source "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe" -Destination OOSU10.exe
-	./OOSU10.exe ooshutup.cfg /quiet
-}
-OOShutup
-#endregion O&OShutup
 #region Chocolatey
 # Install Chocolatey package manager and pre-installs as well
 function ChocolateyPackageManager {
-	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst dotnetfx; cinst --ignore-checksums dotnetfx; cinst notepadplusplus.install; cinst --ignore-checksums notepadplusplus.install
+	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst dotnetfx notepadplusplus.install; cinst --ignore-checksums dotnetfx notepadplusplus.install
 }
 ChocolateyPackageManager
 #endregion Chocolatey
@@ -275,6 +266,15 @@ function DisableCortanaAutostart {
 }
 DisableCortanaAutostart
 #endregion UWP apps
+#region O&OShutup
+function OOShutup {
+	Write-Warning -Message "Running O&O Shutup with Recommended Settings" -Verbose
+	Import-Module BitsTransfer
+	Start-BitsTransfer -Source "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe" -Destination OOSU10.exe
+	./OOSU10.exe ooshutup.cfg /quiet
+}
+OOShutup
+#endregion O&OShutup
 #region Performance
 function Performance {
 	if (!(Test-Path "HKLM:\HKEY_LOCAL_MACHINE\SYSTEM\ControlSet002\Control")) {
