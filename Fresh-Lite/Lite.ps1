@@ -112,7 +112,6 @@ Start-Job -Name "UninstallOneDrive" -ScriptBlock {
 		Remove-Item -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" -Force -ErrorAction Ignore
 	}
 }
-UninstallOneDrive
 # Do not show sync provider notification within File Explorer (current user only)
 # Не показывать уведомления поставщика синхронизации в проводнике (только для текущего пользователя)
 Start-Job -Name "HideOneDriveFileExplorerAd" -ScriptBlock {
