@@ -1,6 +1,6 @@
 # Checking
 # Проверка
-Start-Job -Name "Check" -ScriptBlock {
+function Check {
 	Set-StrictMode -Version Latest
 
 	# Сlear the $Error variable
@@ -26,16 +26,18 @@ Start-Job -Name "Check" -ScriptBlock {
 	}
 	Read-Host 'Please make sure your network connection is available... [HIT RETURN]'
 }
+Check
 #region Chocolatey
 # Install Chocolatey package manager and pre-installs as well
-Start-Job -Name "ChocolateyPackageManager" -ScriptBlock {
+function ChocolateyPackageManager {
 	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); choco feature enable -n=allowGlobalConfirmation; choco feature enable -n useFipsCompliantChecksums; choco feature enable -n=useEnhancedExitCodes; choco config set --name="'proxyBypassOnLocal'" --value="'true'"; cinst dotnetfx; cinst --ignore-checksums dotnetfx
 }
+ChocolateyPackageManager
 #endregion Chocolatey
 #region OneDrive
 # Uninstall OneDrive
 # Удалить OneDrive
-Start-Job -Name "UninstallOneDrive" -ScriptBlock {
+function UninstallOneDrive {
 	[string]$UninstallString = Get-Package -Name "Microsoft OneDrive" -ProviderName Programs -ErrorAction Ignore | ForEach-Object -Process { $_.Meta.Attributes["UninstallString"] }
 	if ($UninstallString) {
 		Write-Verbose -Message "Uninstalling OneDrive..." -Verbose
@@ -112,11 +114,13 @@ Start-Job -Name "UninstallOneDrive" -ScriptBlock {
 		Remove-Item -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" -Force -ErrorAction Ignore
 	}
 }
+UninstallOneDrive
 # Do not show sync provider notification within File Explorer (current user only)
 # Не показывать уведомления поставщика синхронизации в проводнике (только для текущего пользователя)
-Start-Job -Name "HideOneDriveFileExplorerAd" -ScriptBlock {
+function HideOneDriveFileExplorerAd {
 	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name ShowSyncProviderNotifications -PropertyType DWord -Value 0 -Force
 }
+HideOneDriveFileExplorerAd
 #endregion OneDrive
 #region UWP apps
 <#
@@ -132,7 +136,7 @@ Start-Job -Name "HideOneDriveFileExplorerAd" -ScriptBlock {
 	Добавьте имена пакетов UWP-приложений в массив $UncheckedAppXPackages, получив названия их пакетов с помощью команды:
 		(Get-AppxPackage -PackageTypeFilter Bundle -AllUsers).Name
 #>
-Start-Job -Name "UninstallUWPApps" -ScriptBlock {
+function UninstallUWPApps {
 	# UWP apps that won't be shown in the form
 	# UWP-приложения, которые не будут выводиться в форме
 	$ExcludedAppxPackages = @(
@@ -176,9 +180,10 @@ Start-Job -Name "UninstallUWPApps" -ScriptBlock {
 		Write-Verbose -Message "Nothing to do" -Verbose
 	}
 }
+UninstallUWPApps
 # Do not let UWP apps run in the background, except the followings... (current user only)
 # Не разрешать UWP-приложениям работать в фоновом режиме, кроме следующих... (только для текущего пользователя)
-Start-Job -Name "DisableBackgroundUWPApps" -ScriptBlock {
+function DisableBackgroundUWPApps {
 	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications -Name GlobalUserDisabled -PropertyType DWord -Value 1 -Force
 	Get-ChildItem -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications | ForEach-Object -Process {
 		Remove-ItemProperty -Path $_.PsPath -Name * -Force
@@ -202,9 +207,10 @@ Start-Job -Name "DisableBackgroundUWPApps" -ScriptBlock {
 	}
 	$OFS = " "
 }
+DisableBackgroundUWPApps
 # Disable the following Windows features
 # Отключить следующие компоненты Windows
-Start-Job -Name "DisableWindowsFeatures" -ScriptBlock {
+function DisableWindowsFeatures {
 	$WindowsOptionalFeatures = @(
 
 		# Legacy Components
@@ -222,9 +228,10 @@ Start-Job -Name "DisableWindowsFeatures" -ScriptBlock {
 	)
 	Disable-WindowsOptionalFeature -Online -FeatureName $WindowsOptionalFeatures -NoRestart
 }
+DisableWindowsFeatures
 # Disable certain Feature On Demand v2 (FODv2) capabilities
 # Отключить определенные компоненты "Функции по требованию" (FODv2)
-Start-Job -Name "DisableWindowsCapabilities" -ScriptBlock {
+function DisableWindowsCapabilities {
 	# The following FODv2 items will be shown, but their checkboxes would be clear
 	# Следующие дополнительные компоненты будут видны, но их чекбоксы не будут отмечены
 	$ExcludedCapabilities = @(
@@ -246,9 +253,10 @@ Start-Job -Name "DisableWindowsCapabilities" -ScriptBlock {
 		Write-Verbose -Message "Nothing to do" -Verbose
 	}
 }
+DisableWindowsCapabilities
 # Turn off Cortana autostarting
 # Удалить Кортана из автозагрузки
-Start-Job -Name "DisableCortanaAutostart" -ScriptBlock {
+function DisableCortanaAutostart {
 	if (Get-AppxPackage -Name Microsoft.549981C3F5F10) {
 		if (-not (Test-Path -Path "Registry::HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.549981C3F5F10_8wekyb3d8bbwe\CortanaStartupId")) {
 			New-Item -Path "Registry::HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.549981C3F5F10_8wekyb3d8bbwe\CortanaStartupId" -Force
@@ -256,17 +264,19 @@ Start-Job -Name "DisableCortanaAutostart" -ScriptBlock {
 		New-ItemProperty -Path "Registry::HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.549981C3F5F10_8wekyb3d8bbwe\CortanaStartupId" -Name State -PropertyType DWord -Value 1 -Force
 	}
 }
+DisableCortanaAutostart
 #endregion UWP apps
 #region O&OShutup
-Start-Job -Name "OOShutup" -ScriptBlock {
+function OOShutup {
 	Write-Warning -Message "Running O&O Shutup with Recommended Settings" -Verbose
 	Import-Module BitsTransfer
 	Start-BitsTransfer -Source "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe" -Destination OOSU10.exe
 	./OOSU10.exe ooshutup.cfg /quiet
 }
+OOShutup
 #endregion O&OShutup
 #region Performance
-Start-Job -Name "Performance" -ScriptBlock {
+function Performance {
 	if (!(Test-Path "HKLM:\HKEY_LOCAL_MACHINE\SYSTEM\ControlSet002\Control")) {
 		New-Item -Path "HKLM:\HKEY_LOCAL_MACHINE\SYSTEM\ControlSet002\Control" -Force
 	}
@@ -415,13 +425,15 @@ Start-Job -Name "Performance" -ScriptBlock {
 	Set-SmbClientConfiguration -EnableLargeMtu $true -Force
 	Set-SmbClientConfiguration -EnableMultiChannel $true -Force
 }
-Start-Job -Name "FixTimers" -ScriptBlock {
+Performance
+function FixTimers {
 	bcdedit /set `{current`} useplatformtick true
 	bcdedit /set `{current`} disabledynamictick true
 	bcdedit /set `{current`} tscsyncpolicy legacy
 	bcdedit /deletevalue `{current`} useplatformclock
 }
-Start-Job -Name "Network" -ScriptBlock {
+FixTimers
+function Network {
 	netsh int tcp set global timestamps=disabled
 	netsh int tcp set heuristics disabled
 	netsh int tcp set global netdma=enabled
@@ -430,13 +442,15 @@ Start-Job -Name "Network" -ScriptBlock {
 	netsh int tcp set supplemental internet congestionprovider=ctcp
 	netsh int tcp set global rss=enabled
 }
-Start-Job -Name "Memory" -ScriptBlock {
+Network
+function Memory {
 	fsutil behavior set memoryusage 1
 	fsutil behavior set disablelastaccess 1
 	fsutil behavior set mftzone 3
 }
+Memory
 #endregion Performance
-Start-Job -Name "Errors" -ScriptBlock {
+function Errors {
 	if ($Global:Error) {
 		($Global:Error | ForEach-Object -Process {
 				[PSCustomObject] @{
@@ -449,4 +463,4 @@ Start-Job -Name "Errors" -ScriptBlock {
 	}
 exit
 }
-Get-Job *
+Errors
