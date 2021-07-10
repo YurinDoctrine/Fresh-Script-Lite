@@ -421,8 +421,8 @@ function Performance {
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "BufFilesDenyWrite" -Type "DWORD" -Value 0 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "BufNamedPipes" -Type "DWORD" -Value 0 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "DormantFileLimit" -Type "DWORD" -Value 0 -Force
-	New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem -Name "Win95TruncatedExtensions" -PropertyType DWord -Value 1 -Force
-	New-ItemProperty -Path HKLM:\SYSTEM\ControlSet001\Control\FileSystem -Name "Win95TruncatedExtensions" -PropertyType DWord -Value 1 -Force
+	New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem -Name "Win95TruncatedExtensions" -PropertyType DWord -Value 0 -Force
+	New-ItemProperty -Path HKLM:\SYSTEM\ControlSet001\Control\FileSystem -Name "Win95TruncatedExtensions" -PropertyType DWord -Value 0 -Force
 
 	Set-SmbServerConfiguration -EnableMultiChannel $true -Force
 	Set-SmbServerConfiguration -MaxChannelPerSession 16 -Force
