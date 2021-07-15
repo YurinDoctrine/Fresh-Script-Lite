@@ -465,6 +465,6 @@ function Errors {
 			} | Sort-Object -Property Line | Format-Table -AutoSize -Wrap | Out-File -FilePath $HOME\Documents\errorlog.txt
 		)
 	}
-exit
+	exit
 }
 Errors
