@@ -29,6 +29,11 @@ function Check {
 Check
 #region WinGet
 function WinGet {
+	# $WinGetURL = Invoke-RestMethod -Uri "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
+	# Start-BitsTransfer $WinGetURL.assets.browser_download_url
+	# TODO check if its works either not
+	# Install WinGet.
+	# Add-AppxPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 	winget install -e --id Microsoft.dotNetFramework | Out-Host
 	winget install -e --id Notepad++.Notepad++ | Out-Host
 }
