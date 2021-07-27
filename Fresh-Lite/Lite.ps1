@@ -159,9 +159,6 @@ function UninstallUWPApps {
 		# Windows Camera
 		"Microsoft.WindowsCamera",
 
-		# Microsoft Desktop App Installer
-		"Microsoft.DesktopAppInstaller",
-
 		# Web Media Extensions
 		"Microsoft.WebMediaExtensions"
 	)
