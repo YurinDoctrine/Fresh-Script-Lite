@@ -27,13 +27,6 @@ function Check {
 	Read-Host 'Please make sure your network connection is available... [HIT RETURN]'
 }
 Check
-#region WinGet
-function WinGet {
-	# TODO check if its works either not
-	$WinGetURL = Invoke-RestMethod -Uri "https://api.github.com/repos/microsoft/winget-cli/releases/latest"; Start-BitsTransfer $WinGetURL.assets.browser_download_url; Add-AppxPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle; winget install -e --id Microsoft.dotNetFramework | Out-Host; winget install -e --id Notepad++.Notepad++ | Out-Host
-}
-WinGet
-#endregion WinGet
 #region OneDrive
 # Uninstall OneDrive
 # Удалить OneDrive
