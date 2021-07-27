@@ -27,94 +27,6 @@ function Check {
 	Read-Host 'Please make sure your network connection is available... [HIT RETURN]'
 }
 Check
-#region OneDrive
-# Uninstall OneDrive
-# Удалить OneDrive
-function UninstallOneDrive {
-	[string]$UninstallString = Get-Package -Name "Microsoft OneDrive" -ProviderName Programs -ErrorAction Ignore | ForEach-Object -Process { $_.Meta.Attributes["UninstallString"] }
-	if ($UninstallString) {
-		Write-Verbose -Message "Uninstalling OneDrive..." -Verbose
-		Stop-Process -Name OneDrive -Force -ErrorAction Ignore
-		Stop-Process -Name OneDriveSetup -Force -ErrorAction Ignore
-		Stop-Process -Name FileCoAuth -Force -ErrorAction Ignore
-
-		# Getting link to the OneDriveSetup.exe and its' argument(s)
-		# Получаем ссылку на OneDriveSetup.exe и его аргумент(ы)
-		[string[]]$OneDriveSetup = ($UninstallString -Replace ("\s*/", ",/")).Split(",").Trim()
-		if ($OneDriveSetup.Count -eq 2) {
-			Start-Process -FilePath $OneDriveSetup[0] -ArgumentList $OneDriveSetup[1..1] -Wait
-		}
-		else {
-			Start-Process -FilePath $OneDriveSetup[0] -ArgumentList $OneDriveSetup[1..2] -Wait
-		}
-
-		# Getting the OneDrive user folder path
-		# Получаем путь до папки пользователя OneDrive
-		$OneDriveUserFolder = Get-ItemPropertyValue -Path HKCU:\Environment -Name OneDrive
-		if ((Get-ChildItem -Path $OneDriveUserFolder | Measure-Object).Count -eq 0) {
-			Remove-Item -Path $OneDriveUserFolder -Recurse -Force
-		}
-		else {
-			$Message = Invoke-Command -ScriptBlock ([ScriptBlock]::Create("The $OneDriveUserFolder folder is not empty Delete it manually"))
-			Write-Error -Message $Message -ErrorAction SilentlyContinue
-			Invoke-Item -Path $OneDriveUserFolder
-		}
-
-		Remove-ItemProperty -Path HKCU:\Environment -Name OneDrive, OneDriveConsumer -Force -ErrorAction Ignore
-		Remove-Item -Path HKCU:\SOFTWARE\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
-		Remove-Item -Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
-		Remove-Item -Path "$env:ProgramData\Microsoft OneDrive" -Recurse -Force -ErrorAction Ignore
-		Remove-Item -Path $env:SystemDrive\OneDriveTemp -Recurse -Force -ErrorAction Ignore
-		Unregister-ScheduledTask -TaskName *OneDrive* -Confirm:$false
-
-		# Getting the OneDrive folder path
-		# Получаем путь до папки OneDrive
-		$OneDriveFolder = Split-Path -Path (Split-Path -Path $OneDriveSetup[0] -Parent)
-
-		# Save all opened folders in order to restore them after File Explorer restarting
-		# Сохранить все открытые папки, чтобы восстановить их после перезапуска проводника
-		Clear-Variable -Name OpenedFolders -Force -ErrorAction Ignore
-		$OpenedFolders = { (New-Object -ComObject Shell.Application).Windows() | ForEach-Object -Process { $_.Document.Folder.Self.Path } }.Invoke()
-        
-		# Restart explorer process
-		TASKKILL /F /IM explorer.exe
-		Start-Process "explorer.exe"
-		
-		# Attempt to unregister FileSyncShell64.dll and remove
-		# Попытка разрегистрировать FileSyncShell64.dll и удалить
-		$FileSyncShell64dlls = Get-ChildItem -Path "$OneDriveFolder\*\amd64\FileSyncShell64.dll" -Force
-		foreach ($FileSyncShell64dll in $FileSyncShell64dlls.FullName) {
-			Start-Process -FilePath regsvr32.exe -ArgumentList "/u /s $FileSyncShell64dll" -Wait
-			Remove-Item -Path $FileSyncShell64dll -Force -ErrorAction Ignore
-
-			if (Test-Path -Path $FileSyncShell64dll) {
-				$Message = Invoke-Command -ScriptBlock ([ScriptBlock]::Create("$FileSyncShell64dll is blocked Delete it manually"))
-				Write-Error -Message $Message -ErrorAction SilentlyContinue
-			}
-		}
-
-		# Restoring closed folders
-		# Восстановляем закрытые папки
-		foreach ($OpenedFolder in $OpenedFolders) {
-			if (Test-Path -Path $OpenedFolder) {
-				Invoke-Item -Path $OpenedFolder
-			}
-		}
-
-		Remove-Item -Path $OneDriveFolder -Recurse -Force -ErrorAction Ignore
-		Remove-Item -Path $env:LOCALAPPDATA\OneDrive -Recurse -Force -ErrorAction Ignore
-		Remove-Item -Path $env:LOCALAPPDATA\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
-		Remove-Item -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" -Force -ErrorAction Ignore
-	}
-}
-UninstallOneDrive
-# Do not show sync provider notification within File Explorer (current user only)
-# Не показывать уведомления поставщика синхронизации в проводнике (только для текущего пользователя)
-function HideOneDriveFileExplorerAd {
-	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name ShowSyncProviderNotifications -PropertyType DWord -Value 0 -Force
-}
-HideOneDriveFileExplorerAd
-#endregion OneDrive
 #region UWP apps
 <#
 	Uninstall UWP apps
@@ -265,6 +177,94 @@ function OOShutup {
 }
 OOShutup
 #endregion O&OShutup
+#region OneDrive
+# Uninstall OneDrive
+# Удалить OneDrive
+function UninstallOneDrive {
+	[string]$UninstallString = Get-Package -Name "Microsoft OneDrive" -ProviderName Programs -ErrorAction Ignore | ForEach-Object -Process { $_.Meta.Attributes["UninstallString"] }
+	if ($UninstallString) {
+		Write-Verbose -Message "Uninstalling OneDrive..." -Verbose
+		Stop-Process -Name OneDrive -Force -ErrorAction Ignore
+		Stop-Process -Name OneDriveSetup -Force -ErrorAction Ignore
+		Stop-Process -Name FileCoAuth -Force -ErrorAction Ignore
+
+		# Getting link to the OneDriveSetup.exe and its' argument(s)
+		# Получаем ссылку на OneDriveSetup.exe и его аргумент(ы)
+		[string[]]$OneDriveSetup = ($UninstallString -Replace ("\s*/", ",/")).Split(",").Trim()
+		if ($OneDriveSetup.Count -eq 2) {
+			Start-Process -FilePath $OneDriveSetup[0] -ArgumentList $OneDriveSetup[1..1] -Wait
+		}
+		else {
+			Start-Process -FilePath $OneDriveSetup[0] -ArgumentList $OneDriveSetup[1..2] -Wait
+		}
+
+		# Getting the OneDrive user folder path
+		# Получаем путь до папки пользователя OneDrive
+		$OneDriveUserFolder = Get-ItemPropertyValue -Path HKCU:\Environment -Name OneDrive
+		if ((Get-ChildItem -Path $OneDriveUserFolder | Measure-Object).Count -eq 0) {
+			Remove-Item -Path $OneDriveUserFolder -Recurse -Force
+		}
+		else {
+			$Message = Invoke-Command -ScriptBlock ([ScriptBlock]::Create("The $OneDriveUserFolder folder is not empty Delete it manually"))
+			Write-Error -Message $Message -ErrorAction SilentlyContinue
+			Invoke-Item -Path $OneDriveUserFolder
+		}
+
+		Remove-ItemProperty -Path HKCU:\Environment -Name OneDrive, OneDriveConsumer -Force -ErrorAction Ignore
+		Remove-Item -Path HKCU:\SOFTWARE\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path "$env:ProgramData\Microsoft OneDrive" -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path $env:SystemDrive\OneDriveTemp -Recurse -Force -ErrorAction Ignore
+		Unregister-ScheduledTask -TaskName *OneDrive* -Confirm:$false
+
+		# Getting the OneDrive folder path
+		# Получаем путь до папки OneDrive
+		$OneDriveFolder = Split-Path -Path (Split-Path -Path $OneDriveSetup[0] -Parent)
+
+		# Save all opened folders in order to restore them after File Explorer restarting
+		# Сохранить все открытые папки, чтобы восстановить их после перезапуска проводника
+		Clear-Variable -Name OpenedFolders -Force -ErrorAction Ignore
+		$OpenedFolders = { (New-Object -ComObject Shell.Application).Windows() | ForEach-Object -Process { $_.Document.Folder.Self.Path } }.Invoke()
+        
+		# Restart explorer process
+		TASKKILL /F /IM explorer.exe
+		Start-Process "explorer.exe"
+		
+		# Attempt to unregister FileSyncShell64.dll and remove
+		# Попытка разрегистрировать FileSyncShell64.dll и удалить
+		$FileSyncShell64dlls = Get-ChildItem -Path "$OneDriveFolder\*\amd64\FileSyncShell64.dll" -Force
+		foreach ($FileSyncShell64dll in $FileSyncShell64dlls.FullName) {
+			Start-Process -FilePath regsvr32.exe -ArgumentList "/u /s $FileSyncShell64dll" -Wait
+			Remove-Item -Path $FileSyncShell64dll -Force -ErrorAction Ignore
+
+			if (Test-Path -Path $FileSyncShell64dll) {
+				$Message = Invoke-Command -ScriptBlock ([ScriptBlock]::Create("$FileSyncShell64dll is blocked Delete it manually"))
+				Write-Error -Message $Message -ErrorAction SilentlyContinue
+			}
+		}
+
+		# Restoring closed folders
+		# Восстановляем закрытые папки
+		foreach ($OpenedFolder in $OpenedFolders) {
+			if (Test-Path -Path $OpenedFolder) {
+				Invoke-Item -Path $OpenedFolder
+			}
+		}
+
+		Remove-Item -Path $OneDriveFolder -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path $env:LOCALAPPDATA\OneDrive -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path $env:LOCALAPPDATA\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
+		Remove-Item -Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" -Force -ErrorAction Ignore
+	}
+}
+UninstallOneDrive
+# Do not show sync provider notification within File Explorer (current user only)
+# Не показывать уведомления поставщика синхронизации в проводнике (только для текущего пользователя)
+function HideOneDriveFileExplorerAd {
+	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name ShowSyncProviderNotifications -PropertyType DWord -Value 0 -Force
+}
+HideOneDriveFileExplorerAd
+#endregion OneDrive
 #region Performance
 function Performance {
 	if (!(Test-Path "HKLM:\HKEY_LOCAL_MACHINE\SYSTEM\ControlSet002\Control")) {
