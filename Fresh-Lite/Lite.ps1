@@ -69,10 +69,7 @@ function UninstallUWPApps {
 		"Microsoft.WindowsCalculator",
 
 		# Windows Camera
-		"Microsoft.WindowsCamera",
-
-		# Web Media Extensions
-		"Microsoft.WebMediaExtensions"
+		"Microsoft.WindowsCamera"
 	)
 	
 	if (Get-AppxPackage -PackageTypeFilter Bundle -AllUsers | Where-Object -FilterScript { $_.Name -cnotmatch ($ExcludedAppxPackages -join "|") } | Remove-AppxPackage -AllUsers ) {
