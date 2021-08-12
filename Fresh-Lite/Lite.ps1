@@ -48,7 +48,7 @@ function UninstallUWPApps {
 
 		# Microsoft Store
 		"Microsoft.WindowsStore",
-		
+
 		# AMD Radeon UWP panel
 		"AdvancedMicroDevicesInc*",
 
@@ -71,7 +71,7 @@ function UninstallUWPApps {
 		# Windows Camera
 		"Microsoft.WindowsCamera"
 	)
-	
+
 	if (Get-AppxPackage -PackageTypeFilter Bundle -AllUsers | Where-Object -FilterScript { $_.Name -cnotmatch ($ExcludedAppxPackages -join "|") } | Remove-AppxPackage -AllUsers ) {
 		Write-Verbose -Message 'Removed UWP apps' -Verbose
 	}
@@ -140,11 +140,11 @@ function DisableWindowsCapabilities {
 
 		# Language components
 		"Language.*",
-		
+
 		# Features critical to Windows functionality
 		"Windows.Client.ShellComponents*"
 	)
-	
+
 	if (Get-WindowsCapability -Online | Where-Object -FilterScript { ($_.State -eq "Installed") -and ($_.Name -cnotmatch ($ExcludedCapabilities -join "|")) } | Remove-WindowsCapability -Online ) {
 		Write-Verbose -Message 'Removed Capabilities' -Verbose
 	}
@@ -222,11 +222,11 @@ function UninstallOneDrive {
 		# Сохранить все открытые папки, чтобы восстановить их после перезапуска проводника
 		Clear-Variable -Name OpenedFolders -Force -ErrorAction Ignore
 		$OpenedFolders = { (New-Object -ComObject Shell.Application).Windows() | ForEach-Object -Process { $_.Document.Folder.Self.Path } }.Invoke()
-        
+
 		# Restart explorer process
 		TASKKILL /F /IM explorer.exe
 		Start-Process "explorer.exe"
-		
+
 		# Attempt to unregister FileSyncShell64.dll and remove
 		# Попытка разрегистрировать FileSyncShell64.dll и удалить
 		$FileSyncShell64dlls = Get-ChildItem -Path "$OneDriveFolder\*\amd64\FileSyncShell64.dll" -Force
@@ -269,7 +269,7 @@ function Performance {
 	}
 	if (!(Test-Path "HKCU:\AppEvents\Schemes")) {
 		New-Item -Path "HKCU:\AppEvents\Schemes" -Force
-	}	
+	}
 	if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched")) {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched" -Force
 	}
@@ -300,6 +300,7 @@ function Performance {
 	if (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling")) {
 		New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling" -Force
 	}
+ 	New-Item -Path "HKLM:\SOFTWARE\Microsoft\EdgeUpdate" -Force
 	New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched" -Name NonBestEffortLimit -PropertyType DWord -Value 0 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Psched" -Name NonBestEffortLimit -PropertyType DWord -Value 0 -Force
 	New-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_EFSEFeatureFlags" -Type DWord -Value 0 -Force
@@ -323,6 +324,7 @@ function Performance {
 	New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\.NETFramework\v4.5.25000" -Name "SchUseStrongCrypto" -Type DWord -Value 1 -Force
 	New-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\.NETFramework\v4.5.25000" -Name "SchUseStrongCrypto" -Type DWord -Value 1 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling" -Name PowerThrottlingOff -PropertyType DWord -Value 1 -Force
+	New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\EdgeUpdate" -Name "DoNotUpdateToEdgeWithChromium" -Type DWord -Value 1 -Force
 	New-ItemProperty -Path HKLM:\SYSTEM\ControlSet001\Control -Name SvcHostSplitThresholdInKB -PropertyType DWord -Value 380000 -Force
 	New-ItemProperty -Path HKLM:\SYSTEM\ControlSet002\Control -Name SvcHostSplitThresholdInKB -PropertyType DWord -Value 380000 -Force
 	New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control -Name SvcHostSplitThresholdInKB -PropertyType DWord -Value 380000 -Force
