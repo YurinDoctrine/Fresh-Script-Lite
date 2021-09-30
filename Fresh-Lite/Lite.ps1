@@ -166,7 +166,7 @@ function DisableCortanaAutostart {
 DisableCortanaAutostart
 # Install winget
 function InstallWinget {
-	Write-Warning -Message "Running O&O Shutup with Recommended Settings" -Verbose
+	Write-Warning -Message "INSTALLING WINGET..." -Verbose
 	Start-Process "ms-appinstaller:?source=https://aka.ms/getwinget"
 	$pid = (Get-Process AppInstaller).Id
 	Wait-Process -Id $pid
@@ -175,7 +175,7 @@ InstallWinget
 #endregion UWP apps
 #region O&OShutup
 function OOShutup {
-	Write-Warning -Message "INSTALLING WINGET..." -Verbose
+	Write-Warning -Message "Running O&O Shutup with Recommended Settings" -Verbose
 	Import-Module BitsTransfer
 	Start-BitsTransfer -Source "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe" -Destination OOSU10.exe
 	./OOSU10.exe ooshutup.cfg /quiet
