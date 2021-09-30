@@ -69,7 +69,10 @@ function UninstallUWPApps {
 		"Microsoft.WindowsCalculator",
 
 		# Windows Camera
-		"Microsoft.WindowsCamera"
+		"Microsoft.WindowsCamera",
+
+		# Desktop App Installer
+		Microsoft.DesktopAppInstaller
 	)
 
 	if (Get-AppxPackage -PackageTypeFilter Bundle -AllUsers | Where-Object -FilterScript { $_.Name -cnotmatch ($ExcludedAppxPackages -join "|") } | Remove-AppxPackage -AllUsers ) {
@@ -97,7 +100,10 @@ function DisableBackgroundUWPApps {
 		"Microsoft.Windows.SecHealthUI",
 
 		# Microsoft Store
-		"Microsoft.WindowsStore"
+		"Microsoft.WindowsStore",
+
+		# Desktop App Installer
+		Microsoft.DesktopAppInstaller
 	)
 	$OFS = "|"
 	Get-ChildItem -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications | Where-Object -FilterScript { $_.PSChildName -notmatch "^$($ExcludedBackgroundApps.ForEach({[regex]::Escape($_)}))" } | ForEach-Object -Process {
