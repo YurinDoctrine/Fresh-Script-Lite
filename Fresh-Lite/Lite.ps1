@@ -164,6 +164,13 @@ function DisableCortanaAutostart {
 	}
 }
 DisableCortanaAutostart
+# Install winget
+function InstallWinget {
+	Start-Process "ms-appinstaller:?source=https://aka.ms/getwinget"
+	$pid = (Get-Process AppInstaller).Id
+	Wait-Process -Id $pid
+}
+InstallWinget
 #endregion UWP apps
 #region O&OShutup
 function OOShutup {
