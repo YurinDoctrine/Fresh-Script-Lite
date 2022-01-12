@@ -459,6 +459,9 @@ function Network {
 	netsh int tcp set global autotuninglevel=disabled
 	netsh int tcp set supplemental internet congestionprovider=ctcp
 	netsh int tcp set global rss=enabled
+	netsh int tcp set global ecncapability=enabled
+	netsh int tcp set global nonsackrttresiliency=disabled
+	netsh int tcp set global maxsynretransmissions=2
 }
 Network
 function Memory {
