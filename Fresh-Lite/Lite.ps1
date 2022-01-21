@@ -68,9 +68,6 @@ function UninstallUWPApps {
 		# Calculator
 		"Microsoft.WindowsCalculator",
 
-		# Windows Camera
-		"Microsoft.WindowsCamera",
-
 		# Desktop App Installer
 		"Microsoft.DesktopAppInstaller"
 	)
