@@ -15,15 +15,6 @@ function Check {
 			break
 		}
 	}
-
-	# Turn off Controlled folder access to let the script proceed
-	# Выключить контролируемый доступ к папкам
-	switch ((Get-MpPreference).EnableControlledFolderAccess -eq 1) {
-		$true {
-			Write-Warning -Message "Controlled folder access disabled" -Verbose
-			Set-MpPreference -EnableControlledFolderAccess Disabled
-		}
-	}
 	Read-Host 'Please make sure your network connection is available... [HIT RETURN]'
 }
 Check
