@@ -446,6 +446,8 @@ function Performance {
 	New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Multimedia\Audio" -Name "UserDuckingPreference" -PropertyType DWord -Value 3 -Force
 	New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "OpenAtLogon" -PropertyType DWord -Value 0 -Force
 	New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "EnableStartMenu" -PropertyType DWord -Value 0 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" -Name "FeatureSettingsOverride" -PropertyType DWord -Value "72" -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" -Name "FeatureSettingsOverrideMask" -PropertyType DWord -Value "3" -Force
 
 	Set-SmbServerConfiguration -ServerHidden $False -AnnounceServer $False -Force
 	Set-SmbServerConfiguration -EnableLeasing $false -Force
@@ -478,6 +480,14 @@ function Memory {
 	fsutil behavior set mftzone 3
 }
 Memory
+function Processor {
+	setx GPU_MAX_ALLOC_PERCENT 99
+	setx GPU_SINGLE_ALLOC_PERCENT 90
+	setx CPU_MAX_ALLOC_PERCENT 99
+	setx GPU_MAX_HEAP_SIZE 99
+	setx GPU_MAX_USE_SYNC_OBJECTS 1
+}
+Processor
 #endregion Performance
 function Errors {
 	if ($Global:Error) {
