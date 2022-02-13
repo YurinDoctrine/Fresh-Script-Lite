@@ -469,7 +469,7 @@ function Network {
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name HostsPriority -PropertyType DWord -Value 5 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name DnsPriority -PropertyType DWord -Value 6 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name NetbtPriority -PropertyType DWord -Value 7 -Force
-	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name Class -PropertyType DWord -Value 8 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name "Class" -PropertyType DWord -Value 8 -Force
 
 	netsh int tcp set global timestamps=disabled
 	netsh int tcp set global netdma=enabled
