@@ -449,6 +449,9 @@ function Performance {
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" -Name "FeatureSettingsOverride" -PropertyType DWord -Value "72" -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" -Name "FeatureSettingsOverrideMask" -PropertyType DWord -Value "3" -Force
 
+	Remove-Item -Path "HKCU:\Keyboard Layout\Substitutes" -Force
+	Remove-ItemProperty -Path "HKCU:\Keyboard Layout\Preload" -Name "2" -Force
+
 	Set-SmbServerConfiguration -ServerHidden $False -AnnounceServer $False -Force
 	Set-SmbServerConfiguration -EnableLeasing $false -Force
 	Set-SmbClientConfiguration -EnableLargeMtu $true -Force
@@ -462,13 +465,16 @@ function FixTimers {
 }
 FixTimers
 function Network {
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name LocalPriority -PropertyType DWord -Value 4 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name HostsPriority -PropertyType DWord -Value 5 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name DnsPriority -PropertyType DWord -Value 6 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name NetbtPriority -PropertyType DWord -Value 7 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name Class -PropertyType DWord -Value 8 -Force
+
 	netsh int tcp set global timestamps=disabled
-	netsh int tcp set heuristics disabled
 	netsh int tcp set global netdma=enabled
 	netsh int tcp set global dca=enabled
 	netsh int tcp set global autotuninglevel=disabled
-	netsh int tcp set supplemental internet congestionprovider=ctcp
-	netsh int tcp set global rss=enabled
 	netsh int tcp set global ecncapability=enabled
 	netsh int tcp set global nonsackrttresiliency=disabled
 	netsh int tcp set global maxsynretransmissions=2
