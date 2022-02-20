@@ -463,6 +463,8 @@ function Performance {
 	New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLUA" -PropertyType DWord -Value 0 -Force
 	New-ItemProperty -Path "HKCU:\Keyboard Layout\ShowToast" -Name "Show" -PropertyType DWord -Value 0 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services" -Name "IoLatencyCap" -PropertyType DWord -Value 0 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" -Name "Start" -PropertyType DWord -Value 0 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" -Name "Start" -PropertyType DWord -Value 0 -Force
 
 	Remove-ItemProperty -Path "HKCU:\Keyboard Layout\Preload" -Name "2" -Force
 
