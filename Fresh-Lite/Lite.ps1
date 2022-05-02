@@ -514,7 +514,7 @@ function Network {
 }
 Network
 function Memory {
-	fsutil behavior set memoryusage 1
+	fsutil behavior set memoryusage 2
 	fsutil behavior set disablelastaccess 1
 	fsutil behavior set mftzone 3
 	fsutil behavior set quotanotify 7200
