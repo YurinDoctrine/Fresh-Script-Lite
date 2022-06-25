@@ -504,8 +504,11 @@ function Network {
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name NetbtPriority -PropertyType DWord -Value 7 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name "Class" -PropertyType DWord -Value 8 -Force
 
+	Disable-NetAdapterLso -Name *
+
 	netsh int tcp set global timestamps=disabled
 	netsh int tcp set global netdma=enabled
+	netsh int tcp set global rsc=disabled
 	netsh int tcp set global dca=enabled
 	netsh int tcp set global autotuninglevel=disabled
 	netsh int tcp set global ecncapability=enabled
