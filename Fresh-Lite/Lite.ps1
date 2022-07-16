@@ -314,6 +314,10 @@ function Performance {
 	New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Cache" -Force
 	New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched" -Name NonBestEffortLimit -PropertyType DWord -Value 0 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Psched" -Name NonBestEffortLimit -PropertyType DWord -Value 0 -Force
+	New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched" -Name TimerResolution -PropertyType DWord -Value 1 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Psched" -Name TimerResolution -PropertyType DWord -Value 1 -Force
+	New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Psched" -Name MaxOutstandingSends -PropertyType DWord -Value 1 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Psched" -Name MaxOutstandingSends -PropertyType DWord -Value 1 -Force
 	New-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_EFSEFeatureFlags" -Type DWord -Value 0 -Force
 	New-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_DSEBehavior" -Type DWord -Value 0 -Force
 	New-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_FSEBehavior" -Type DWord -Value 2 -Force
@@ -442,7 +446,7 @@ function Performance {
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name EnablePerCpuClockTickScheduling -Type "DWORD" -Value "0" -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name HeteroSchedulerOptions -Type "DWORD" -Value "0" -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name SerializeTimerExpiration -Type "DWORD" -Value "1" -Force
-	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name MaximumSharedReadyQueueSize -Type "DWORD" -Value "128" -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name MaximumSharedReadyQueueSize -Type "DWORD" -Value "1" -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name MinDynamicTickDuration -Type "DWORD" -Value "1000" -Force
 	New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" -Name MaintenanceDisabled -Type "DWORD" -Value "1" -Force
 	New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" -Name WakeUp -Type "DWORD" -Value "0" -Force
@@ -486,6 +490,7 @@ function Performance {
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NDIS\Parameters" -Name "RssBaseCpu" -PropertyType DWord -Value 1 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\NDIS\Parameters" -Name "MaxNumRssCpus" -PropertyType DWord -Value 2 -Force
 	New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "DnsCacheEnabled" -PropertyType DWord -Value 1 -Force
+	New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "SyncMode5" -PropertyType DWord -Value 3 -Force
 	New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "NoLazyMode" -PropertyType DWord -Value 1 -Force
 	New-ItemProperty -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer -Name AlwaysUnloadDLL -PropertyType DWord -Value 1 -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\I/O System" -Name RequireDeviceAccessCheck -PropertyType DWord -Value 0 -Force
@@ -505,6 +510,8 @@ function Performance {
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Executive" -Name AdditionalDelayedWorkerThreads -Type "DWORD" -Value "20" -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Executive" -Name DefaultNumberOfWorkerThreads -Type "DWORD" -Value "64" -Force
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Executive" -Name WorkerFactoryThreadIdleTimeout -Type "DWORD" -Value "3" -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name "AlpcWakePolicy" -Type DWord -Value 1 -Force
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Audiosrv" -Name "ErrorControl" -Type DWord -Value 2 -Force
 
 	if (!(Test-Path "HKCU:\Keyboard Layout\ShowToast")) {
 		New-Item -Force "HKCU:\Keyboard Layout\ShowToast"
