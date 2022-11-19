@@ -172,7 +172,7 @@ function OOShutup {
     Write-Warning -Message "Running O&O Shutup with Recommended Settings" -Verbose
     Import-Module BitsTransfer
     Start-BitsTransfer -Source "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe" -Destination OOSU10.exe
-    ./OOSU10.exe ooshutup.cfg /quiet
+    .\OOSU10.exe ooshutup.cfg /quiet
 }
 OOShutup
 #endregion O&OShutup
