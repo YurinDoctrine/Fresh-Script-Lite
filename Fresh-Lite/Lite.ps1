@@ -634,17 +634,24 @@ function Network {
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider" -Name "Class" -PropertyType DWord -Value 8 -Force
 
     Disable-NetAdapterLso -Name *
+    Disable-NetAdapterRsc -Name *
 
+    netsh int tcp set supplemental Internet
+    netsh int tcp set supplemental Internet congestionprovider=ctcp
+    netsh int tcp set security mpp=disabled
     netsh int tcp set global initialRto=2000
     netsh int tcp set global timestamps=disabled
     netsh int tcp set global netdma=enabled
     netsh int tcp set global rsc=disabled
+    netsh int tcp set global rss=enabled
     netsh int tcp set global dca=enabled
+    netsh int tcp set global ecn=enabled
     netsh int tcp set global autotuninglevel=disabled
     netsh int tcp set global ecncapability=enabled
     netsh int tcp set global nonsackrttresiliency=disabled
     netsh int tcp set global maxsynretransmissions=2
     netsh int ip set global icmpredirects=disabled
+    netsh winsock set autotuning on
 }
 Network
 function Memory {
