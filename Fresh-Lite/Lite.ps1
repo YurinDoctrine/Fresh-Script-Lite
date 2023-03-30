@@ -647,6 +647,7 @@ function Network {
     netsh int tcp set supplemental Template=InternetCustom CongestionProvider=bbr2
     netsh int tcp set supplemental Template=DatacenterCustom CongestionProvider=bbr2
     netsh int tcp set security mpp=disabled
+    netsh int tcp set security profiles=disabled
     netsh int tcp set global initialRto=2000
     netsh int tcp set global timestamps=disabled
     netsh int tcp set global netdma=enabled
