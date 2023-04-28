@@ -635,6 +635,8 @@ function Network {
     netsh int tcp set global maxsynretransmissions=2
     netsh int ip set global icmpredirects=disabled
     netsh winsock set autotuning on
+
+    Get-NetAdapter | Get-DnsClientServerAddress | Set-DnsClientServerAddress -ServerAddresses ("9.9.9.11", "149.112.112.11")
 }
 Network
 function Memory {
