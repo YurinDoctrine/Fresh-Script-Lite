@@ -577,6 +577,7 @@ function Performance {
 
     Remove-ItemProperty -Path "HKCU:\Keyboard Layout\Preload" -Name "2" -Force
 
+    Disable-MMAgent -MemoryCompression
     Disable-MMAgent -PageCombining
 
     auditpol /set /category:"Account Logon" /success:disable
