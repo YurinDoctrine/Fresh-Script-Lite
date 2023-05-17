@@ -624,7 +624,7 @@ function FixTimers {
     diskperf -N
     bcdedit /set `{current`} useplatformtick true
     bcdedit /set `{current`} disabledynamictick true
-    bcdedit /set `{current`} tscsyncpolicy legacy
+    bcdedit /set `{current`} tscsyncpolicy enhanced
     bcdedit /deletevalue `{current`} useplatformclock
 }
 FixTimers
@@ -684,8 +684,6 @@ function Processor {
     setx GPU_ENABLE_LARGE_ALLOCATION 99
     setx GPU_MAX_WORKGROUP_SIZE 1024
     setx GPU_FORCE_64BIT_PTR 0
-
-    bcdedit /set tscsyncpolicy Enhanced
 
     powercfg -setactive SCHEME_BALANCED
     powercfg -setACvalueindex SCHEME_CURRENT SUB_NONE PERSONALITY 2
