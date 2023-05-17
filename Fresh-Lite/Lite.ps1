@@ -625,6 +625,8 @@ function FixTimers {
     bcdedit /set `{current`} useplatformtick true
     bcdedit /set `{current`} disabledynamictick true
     bcdedit /set `{current`} tscsyncpolicy enhanced
+    bcdedit /set `{current`} debug No
+    bcdedit /set `{current`} highestmode Yes
     bcdedit /deletevalue `{current`} useplatformclock
 }
 FixTimers
