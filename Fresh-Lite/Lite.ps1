@@ -611,7 +611,7 @@ function Performance {
     auditpol /set /category:"System" /success:disable
     auditpol /set /category:"System" /failure:disable
 
-    Set-MpPreference -ScanAvgCPULoadFactor 1
+    Set-MpPreference -ScanAvgCPULoadFactor 5
     Set-MpPreference -EnableLowCpuPriority $True
     Set-MpPreference -ScanOnlyIfIdleEnabled $True
 
