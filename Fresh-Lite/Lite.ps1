@@ -11,7 +11,7 @@ function Check {
     # Определить разрядность ОС
     switch ([Environment]::Is64BitOperatingSystem) {
         $false {
-            Write-Warning -Message "The script supports Windows 10 x64 only" -Verbose
+            Write-Warning -Message "This script supports x64 only" -Verbose
             break
         }
     }
