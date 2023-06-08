@@ -107,6 +107,12 @@ DisableBackgroundUWPApps
 function DisableWindowsFeatures {
     $WindowsOptionalFeatures = @(
 
+        # Windows Fax and Scan
+        "FaxServicesClientPackage",
+
+        # Internet Explorer
+        "Internet-Explorer-Optional-*",
+
         # Legacy Components
         "LegacyComponents",
 
@@ -120,7 +126,7 @@ function DisableWindowsFeatures {
         # Work Folders Client
         "WorkFolders-Client"
     )
-    Disable-WindowsOptionalFeature -Online -FeatureName $WindowsOptionalFeatures -All -NoRestart
+    Disable-WindowsOptionalFeature -Online -FeatureName $WindowsOptionalFeatures -NoRestart
 }
 DisableWindowsFeatures
 # Disable certain Feature On Demand v2 (FODv2) capabilities
@@ -637,6 +643,7 @@ function Performance {
     regsvr32.exe /s wuwebv.dll
 
     Enable-WindowsOptionalFeature -Online -FeatureName NetFx4-AdvSrvs -All -NoRestart
+    Enable-WindowsOptionalFeature -Online -FeatureName NetFx4Extended-ASPNET45 -All -NoRestart
     Enable-WindowsOptionalFeature -Online -FeatureName NetFx3 -All -NoRestart
 
     Disable-MMAgent -MemoryCompression
