@@ -120,7 +120,7 @@ function DisableWindowsFeatures {
         # Work Folders Client
         "WorkFolders-Client"
     )
-    Disable-WindowsOptionalFeature -Online -FeatureName $WindowsOptionalFeatures -NoRestart
+    Disable-WindowsOptionalFeature -Online -FeatureName $WindowsOptionalFeatures -All -NoRestart
 }
 DisableWindowsFeatures
 # Disable certain Feature On Demand v2 (FODv2) capabilities
@@ -635,6 +635,9 @@ function Performance {
     regsvr32.exe /s wucltux.dll
     regsvr32.exe /s muweb.dll
     regsvr32.exe /s wuwebv.dll
+
+    Enable-WindowsOptionalFeature -Online -FeatureName NetFx4-AdvSrvs -All -NoRestart
+    Enable-WindowsOptionalFeature -Online -FeatureName NetFx3 -All -NoRestart
 
     Disable-MMAgent -MemoryCompression
     Disable-MMAgent -PageCombining
