@@ -72,17 +72,8 @@ function DisableBackgroundUWPApps {
 
     $ExcludedBackgroundApps = @(
 
-        # Windows Search
-        "Microsoft.Windows.Search",
-
-        # Windows Security
-        "Microsoft.Windows.SecHealthUI",
-
         # Microsoft Store
-        "Microsoft.WindowsStore",
-
-        # Desktop App Installer
-        "Microsoft.DesktopAppInstaller"
+        "Microsoft.WindowsStore"
     )
     $OFS = "|"
     Get-ChildItem -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications | Where-Object -FilterScript { $_.PSChildName -notmatch "^$($ExcludedBackgroundApps.ForEach({[regex]::Escape($_)}))" } | ForEach-Object -Process {
