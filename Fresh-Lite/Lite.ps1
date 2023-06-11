@@ -49,16 +49,6 @@ function UninstallUWPApps {
         # Realtek Audio Control
         "RealtekSemiconductorCorp.RealtekAudioControl",
 
-        # Photos (and Video Editor)
-        "Microsoft.Windows.Photos",
-        "Microsoft.Photos.MediaEngineDLC",
-
-        # HEVC Video Extensions from Device Manufacturer
-        "Microsoft.HEVCVideoExtension",
-
-        # Calculator
-        "Microsoft.WindowsCalculator",
-
         # Desktop App Installer
         "Microsoft.DesktopAppInstaller"
     )
