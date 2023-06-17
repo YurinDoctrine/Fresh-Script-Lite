@@ -37,9 +37,6 @@ function UninstallUWPApps {
     # UWP-приложения, которые не будут выводиться в форме
     $ExcludedAppxPackages = @(
 
-        # Microsoft Store
-        "Microsoft.WindowsStore",
-
         # AMD Radeon UWP panel
         "AdvancedMicroDevicesInc*",
 
