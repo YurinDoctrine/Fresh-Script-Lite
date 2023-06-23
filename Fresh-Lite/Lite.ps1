@@ -689,7 +689,7 @@ function Network {
     netsh int tcp set security profiles=disabled
     netsh int tcp set global initialRto=2000
     netsh int tcp set global timestamps=disabled
-    netsh int tcp set global netdma=enabled
+    netsh int tcp set global netdma=disabled
     netsh int tcp set global rsc=disabled
     netsh int tcp set global rss=enabled
     netsh int tcp set global dca=enabled
@@ -708,7 +708,7 @@ function Memory {
     fsutil behavior set memoryusage 2
     fsutil behavior set disablelastaccess 1
     fsutil behavior set mftzone 3
-    fsutil behavior set quotanotify 7200
+    fsutil behavior set quotanotify 0
 }
 Memory
 function Processor {
