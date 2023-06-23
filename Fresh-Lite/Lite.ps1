@@ -538,6 +538,8 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableFontProviders" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -PropertyType DWord -Value 1 -Force
 
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power" -Name "Latency" -PropertyType DWord -Value 1 -Force
+
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0000" -Name "*RssBaseProcNumber" -PropertyType DWord -Value 2 -Force
 
     if (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\DisplayPostProcessing")) {
@@ -679,6 +681,7 @@ function FixTimers {
     bcdedit /set `{current`} debug No
     bcdedit /set `{current`} highestmode Yes
     bcdedit /set `{current`} perfmem 1
+    bcdedit /set `{current`} usephysicaldestination No
     bcdedit /deletevalue `{current`} useplatformclock
 }
 FixTimers
@@ -715,6 +718,7 @@ function Network {
     netsh int tcp set global ecncapability=enabled
     netsh int tcp set global nonsackrttresiliency=disabled
     netsh int tcp set global maxsynretransmissions=2
+    netsh int udp set global uro=enabled
     netsh int ip set global icmpredirects=disabled
     netsh winsock set autotuning on
 
@@ -722,6 +726,8 @@ function Network {
 }
 Network
 function Memory {
+    bcdedit /set `{current`} firstmegabytepolicy UseAll
+
     fsutil behavior set memoryusage 2
     fsutil behavior set disablelastaccess 1
     fsutil behavior set mftzone 3
