@@ -186,7 +186,7 @@ function UninstallOneDrive {
         Remove-Item -Path HKCU:\SOFTWARE\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
         Remove-Item -Path HKLM:\SOFTWARE\WOW6432Node\Microsoft\OneDrive -Recurse -Force -ErrorAction Ignore
         Remove-Item -Path "$env:ProgramData\Microsoft OneDrive" -Recurse -Force -ErrorAction Ignore
-        Remove-Item -Path $env:SystemDrive\OneDriveTemp -Recurse -Force -ErrorAction Ignore
+        Remove-Item -Path $env:SYSTEMDRIVE\OneDriveTemp -Recurse -Force -ErrorAction Ignore
         Unregister-ScheduledTask -TaskName *OneDrive* -Confirm:$false
 
         # Getting the OneDrive folder path
@@ -258,12 +258,12 @@ function UninstallMSTeams {
         Write-Warning "Teams installation not found"
     }
     # Get all Users
-    $Users = Get-ChildItem -Path "$($ENV:SystemDrive)\Users"
+    $Users = Get-ChildItem -Path "$($env:SYSTEMDRIVE)\Users"
     # Process all the Users
     $Users | ForEach-Object {
         Write-Host "Process user: $($_.Name)" -ForegroundColor Yellow
         #Locate installation folder
-        $localAppData = "$($ENV:SystemDrive)\Users\$($_.Name)\AppData\Local\Microsoft\Teams"
+        $localAppData = "$($env:SYSTEMDRIVE)\Users\$($_.Name)\AppData\Local\Microsoft\Teams"
         $programData = "$($env:ProgramData)\$($_.Name)\Microsoft\Teams"
         If (Test-Path "$($localAppData)\Current\Teams.exe") {
             unInstallTeams($localAppData)
@@ -728,7 +728,7 @@ function Memory {
     fsutil behavior set quotanotify 10800
     fsutil behavior set bugcheckoncorrupt 0
     fsutil behavior set disablespotcorruptionhandling 1
-    fsutil resource setlog shrink 99.9 c:\
+    fsutil resource setlog shrink 99.9 $env:SYSTEMDRIVE\
 }
 Memory
 function Processor {
