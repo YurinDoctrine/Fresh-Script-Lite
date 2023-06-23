@@ -728,6 +728,7 @@ function Memory {
     fsutil behavior set quotanotify 10800
     fsutil behavior set bugcheckoncorrupt 0
     fsutil behavior set disablespotcorruptionhandling 1
+    fsutil resource setlog shrink 99.9 c:\
 }
 Memory
 function Processor {
