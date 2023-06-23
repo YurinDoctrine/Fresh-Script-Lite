@@ -672,6 +672,7 @@ function Performance {
 Performance
 function FixTimers {
     diskperf -N
+    bcdedit /timeout 0
     bcdedit /set `{current`} useplatformtick true
     bcdedit /set `{current`} disabledynamictick true
     bcdedit /set `{current`} tscsyncpolicy enhanced
