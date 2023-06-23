@@ -726,6 +726,8 @@ function Memory {
     fsutil behavior set disablelastaccess 1
     fsutil behavior set mftzone 3
     fsutil behavior set quotanotify 10800
+    fsutil behavior set bugcheckoncorrupt 0
+    fsutil behavior set disablespotcorruptionhandling 1
 }
 Memory
 function Processor {
