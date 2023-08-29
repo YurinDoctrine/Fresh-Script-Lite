@@ -726,7 +726,7 @@ function Network {
     netsh int ip set global icmpredirects=disabled
     netsh winsock set autotuning on
 
-    Get-NetAdapter | Get-DnsClientServerAddress | Set-DnsClientServerAddress -ServerAddresses ("9.9.9.11", "149.112.112.11")
+    Get-NetAdapter | Get-DnsClientServerAddress | Set-DnsClientServerAddress -ServerAddresses ("1.1.1.1", "1.0.0.1")
 }
 Network
 function Memory {
