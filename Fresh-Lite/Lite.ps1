@@ -415,6 +415,8 @@ function Performance {
     New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name "Start_ShowRun" -PropertyType DWord -Value 1 -Force
     New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name IconsOnly -PropertyType DWord -Value 1 -Force
     New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name UseCompactMode -PropertyType DWord -Value 1 -Force
+    New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name TaskbarDa -PropertyType DWord -Value 0 -Force
+    New-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -Name TaskbarMn -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name ActiveWndTrackTimeout -PropertyType String -Value 0 -Force
     New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name MouseWheelRouting -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name FontSmoothing -PropertyType String -Value 2 -Force
