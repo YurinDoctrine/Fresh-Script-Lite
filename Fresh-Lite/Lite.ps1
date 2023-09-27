@@ -682,8 +682,9 @@ Performance
 function FixTimers {
     diskperf -N
     bcdedit /timeout 1
-    $cores = Get-WmiObject Win32_Processor | Select-Object -ExpandProperty NumberOfLogicalProcessors
-    bcdedit /set numproc $cores
+    $logicalProcessors = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
+    $cores = $logicalProcessors - 1
+    bcdedit /set `{current`} numproc $cores
     bcdedit /set `{current`} useplatformtick true
     bcdedit /set `{current`} disabledynamictick true
     bcdedit /set `{current`} tscsyncpolicy enhanced
