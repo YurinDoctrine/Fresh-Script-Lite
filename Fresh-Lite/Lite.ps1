@@ -47,6 +47,7 @@ function UninstallUWPApps {
     else {
         Write-Verbose -Message "Nothing to do" -Verbose
     }
+    Get-AppxPackage -AllUsers | Remove-AppxPackage -AllUsers; Get-AppxPackage -AllUsers | Remove-AppxPackage
 }
 UninstallUWPApps
 # Do not let UWP apps run in the background, except the followings... (current user only)
