@@ -778,7 +778,7 @@ function Network {
     set-netoffloadglobalsetting -ReceiveSideScaling Enabled
     set-netoffloadglobalsetting -TaskOffload Enabled
 
-    Get-NetAdapter | Get-DnsClientServerAddress | Set-DnsClientServerAddress -ServerAddresses ("1.1.1.1", "1.0.0.1")
+    Get-NetAdapter | Get-DnsClientServerAddress | Set-DnsClientServerAddress -ServerAddresses ("94.140.14.14", "94.140.15.15")
 }
 Network
 function Memory {
