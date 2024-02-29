@@ -600,6 +600,11 @@ function Performance {
     }
     New-ItemProperty -Path "HKLM:\SYSTEM\ControlSet001\Control\BootControl" -Name "BootProgressAnimation" -PropertyType DWord -Value 0 -Force
 
+    if (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\SCMConfig")) {
+        New-Item -Force "HKLM:\SYSTEM\CurrentControlSet\Control\SCMConfig"
+    }
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SCMConfig" -Name "EnableSvchostMitigationPolicy" -PropertyType DWord -Value 0 -Force
+
     if (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\CredentialGuard")) {
         New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\CredentialGuard" -Force
     }
