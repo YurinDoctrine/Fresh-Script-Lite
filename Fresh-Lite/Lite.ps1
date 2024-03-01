@@ -738,6 +738,8 @@ function Performance {
     Set-MpPreference -DisableScriptScanning  $True
     Set-MpPreference -DisablePrivacyMode  $False
 
+    Set-BcdElement -Element 'nx' -Type 'Integer' -Value '0'
+
     Set-SmbServerConfiguration -ServerHidden $False -AnnounceServer $False -Force
     Set-SmbServerConfiguration -EnableLeasing $false -Force
     Set-SmbClientConfiguration -EnableLargeMtu $true -Force
