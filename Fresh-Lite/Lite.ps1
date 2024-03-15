@@ -351,6 +351,7 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" -Name "TdrDelay" -Type DWord -Value 60 -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" -Name "TdrDebugMode" -Type DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Scheduler" -Name "EnablePreemption" -Type DWord -Value 0 -Force
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Scheduler" -Name "ForceFlipTrueImmediateMode" -Type DWord -Value 1 -Force
     New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem -Name "Win31FileSystem" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path HKLM:\SYSTEM\ControlSet001\Control\FileSystem -Name "Win31FileSystem" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem -Name "Win95TruncatedExtensions" -PropertyType DWord -Value 0 -Force
@@ -518,6 +519,7 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Name FlushPolicy -Type "DWORD" -Value "1" -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\0cc5b647-c1df-4637-891a-dec35c318583" -Name Attributes -Type "DWORD" -Value "0" -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\be337238-0d82-4146-a960-4f3749d470c7" -Name Attributes -Type "DWORD" -Value "2" -Force
+    New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager" -Name SafeDLLSearchMode -PropertyType DWord -Value 1 -Force
     New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager" -Name ImageExecutionOptions -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" -Name "AllocationPreference" -PropertyType DWord -Value "0" -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" -Name "EnableCooling" -PropertyType DWord -Value "0" -Force
@@ -532,6 +534,7 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "AlwaysOn" -PropertyType DWord -Value 1 -Force
     New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Games" -Name "FpsAll" -PropertyType DWord -Value 1 -Force
     New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Games" -Name "GameFluidity" -PropertyType DWord -Value 1 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\DirectDraw" -Name "EmulationOnly" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib" -Name "Disable Performance Counters" -PropertyType DWord -Value 1 -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Storage" -Name "StorageD3InModernStandby" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services" -Name "IoLatencyCap" -PropertyType DWord -Value 0 -Force
@@ -555,6 +558,15 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Servicing" -Name "RepairContentServerSource" -PropertyType DWord -Value 2 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -PropertyType DWord -Value 1 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI\BootAnimation" -Name "DisableStartupSound" -PropertyType DWord -Value 1 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "DisableStartupSound" -PropertyType DWord -Value 1 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows" -Name "DesktopHeapLogging" -PropertyType DWord -Value 0 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows" -Name "DwmInputUsesIoCompletionPort" -PropertyType DWord -Value 0 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows" -Name "EnableDwmInputProcessing" -PropertyType DWord -Value 0 -Force
+
+    if (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\QoS")) {
+        New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\QoS" -Force
+    }
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\QoS" -Name "EnablePriorityBoost" -PropertyType DWord -Value 1 -Force
 
     if (!(Test-Path "HKLM:\SYSTEM\ResourcePolicyStore\ResourceSets\Policies\IO\None")) {
         New-Item -Path "HKLM:\SYSTEM\ResourcePolicyStore\ResourceSets\Policies\IO\None" -Force
@@ -606,6 +618,8 @@ function Performance {
     if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore")) {
         New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Force
     }
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Name "RemoveWindowsStore" -PropertyType DWord -Value 1 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Name "DisableStoreApps " -PropertyType DWord -Value 1 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Name "AutoDownload" -PropertyType DWord -Value 2 -Force
 
     if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy")) {
@@ -662,6 +676,21 @@ function Performance {
         New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force
     }
     New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoSimpleNetIDList" -Type DWord -Value 1 -Force
+
+    if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer")) {
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Force
+    }
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "NoHeapTerminationOnCorruption" -Type DWord -Value 1 -Force
+
+    if (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\SoftwareProtectionPlatform")) {
+        New-Item -Force "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\SoftwareProtectionPlatform"
+    }
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\SoftwareProtectionPlatform" -Name "Activation" -PropertyType DWord -Value 0 -Force
+
+    if (!(Test-Path "HKLM:\SOFTWARE\SOFTWARE\Microsoft\Input\Buttons")) {
+        New-Item -Force "HKLM:\SOFTWARE\SOFTWARE\Microsoft\Input\Buttons"
+    }
+    New-ItemProperty -Path "HKLM:\SOFTWARE\SOFTWARE\Microsoft\Input\Buttons" -Name HardwareButtonsAsVKeys -PropertyType DWord -Value 0 -Force
 
     if (!(Test-Path "HKCU:\Keyboard Layout\ShowToast")) {
         New-Item -Force "HKCU:\Keyboard Layout\ShowToast"
@@ -779,6 +808,7 @@ function FixTimers {
     bcdedit /set `{current`} disabledynamictick true
     bcdedit /set `{current`} tscsyncpolicy enhanced
     bcdedit /set `{current`} debug No
+    bcdedit /set `{current`} isolatedcontext No
     bcdedit /set `{current`} highestmode Yes
     bcdedit /set `{current`} perfmem 1
     bcdedit /set `{current`} usephysicaldestination No
@@ -831,6 +861,7 @@ function Network {
 Network
 function Memory {
     bcdedit /set `{current`} firstmegabytepolicy UseAll
+    bcdedit /set `{current`} linearaddress57 OptOut
 
     fsutil behavior set memoryusage 2
     fsutil behavior set disablelastaccess 1
