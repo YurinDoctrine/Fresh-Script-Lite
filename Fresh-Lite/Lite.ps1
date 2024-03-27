@@ -838,6 +838,8 @@ function Network {
     Disable-NetAdapterLso -Name *
     Disable-NetAdapterRsc -Name *
 
+    Set-NetTCPSetting -SettingName "*" -MemoryPressureProtection Disabled
+
     netsh int tcp set supplemental Template=Internet CongestionProvider=dctcp
     netsh int tcp set supplemental Template=Datacenter CongestionProvider=dctcp
     netsh int tcp set supplemental Template=Compat CongestionProvider=dctcp
@@ -872,6 +874,7 @@ function Network {
     set-netoffloadglobalsetting -PacketCoalescingFilter Disabled
     set-netoffloadglobalsetting -ScalingHeuristics Disabled
 
+    Get-NetAdapter -IncludeHidden | Set-NetIPInterface -WeakHostSend Enabled -WeakHostReceive Enabled
     Get-NetAdapter -IncludeHidden | Get-DnsClientServerAddress | Set-DnsClientServerAddress -ServerAddresses ("176.103.130.130", "176.103.130.131")
 }
 Network
