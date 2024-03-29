@@ -605,6 +605,7 @@ function Performance {
         New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Processor" -Force
     }
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Processor" -Name "CPPCEnable" -PropertyType DWord -Value 0 -Force
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Processor" -Name "Cstates" -PropertyType DWord -Value 0 -Force
 
     if (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\DisplayPostProcessing")) {
         New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\DisplayPostProcessing" -Force
