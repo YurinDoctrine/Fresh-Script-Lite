@@ -350,6 +350,7 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" -Name "TdrLevel" -Type DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" -Name "TdrDelay" -Type DWord -Value 60 -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" -Name "TdrDebugMode" -Type DWord -Value 0 -Force
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Scheduler" -Name "VsyncIdleTimeout" -Type DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Scheduler" -Name "EnablePreemption" -Type DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Scheduler" -Name "ForceFlipTrueImmediateMode" -Type DWord -Value 1 -Force
     New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem -Name "Win31FileSystem" -PropertyType DWord -Value 0 -Force
@@ -560,6 +561,10 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "NewTabPageContentEnabled" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableFontProviders" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "DisableHHDEP" -PropertyType DWord -Value 1 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MRT" -Name "DontOfferThroughWUAU" -PropertyType DWord -Value 1 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MRT" -Name "DontReportInfectionInformation" -PropertyType DWord -Value 1 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\RemovalTools\MpGears" -Name "HeartbeatTrackingIndex" -PropertyType DWord -Value 0 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\RemovalTools\MpGears" -Name "SpyNetReportingLocation" -PropertyType String -Value "" -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\ScheduledDiagnostics" -Name "EnabledExecution" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Servicing" -Name "RepairContentServerSource" -PropertyType DWord -Value 2 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -PropertyType DWord -Value 1 -Force
@@ -621,6 +626,13 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\DisplayPostProcessing" -Name "NoLazyMode" -PropertyType DWord -Value 1 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\DisplayPostProcessing" -Name "Clock Rate" -PropertyType DWord -Value 10000 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\DisplayPostProcessing" -Name "GPU Priority" -PropertyType DWord -Value 12 -Force
+
+    New-ItemProperty -Path "HKLM:\SYSTEM\ControlSet001\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" -Name "FeatureTestControl" -Type DWord -Value 0x0000ffff -Force
+
+    if (!(Test-Path "HKCU:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch")) {
+        New-Item -Force "HKCU:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch"
+    }
+    New-ItemProperty -Path "HKCU:\SYSTEM\CurrentControlSet\Policies\EarlyLaunch" -Name "DriverLoadPolicy" -PropertyType DWord -Value 3 -Force
 
     if (!(Test-Path "HKCU:\Software\Microsoft\DirectX\GraphicsSettings")) {
         New-Item -Path "HKCU:\Software\Microsoft\DirectX\GraphicsSettings" -Force
@@ -692,6 +704,9 @@ function Performance {
     if (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
         New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force
     }
+    New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoAutorun" -Type DWord -Value 1 -Force
+    New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoDriveTypeAutoRun" -Type DWord -Value 255 -Force
+    New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "AllowOnlineTips" -Type DWord -Value 0 -Force
     New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoSimpleNetIDList" -Type DWord -Value 1 -Force
 
     if (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer")) {
@@ -785,6 +800,11 @@ function Performance {
     auditpol /set /category:"Detailed Tracking" /failure:disable
     auditpol /set /category:"System" /success:disable
     auditpol /set /category:"System" /failure:disable
+
+    wevtutil sl Application /ms:0
+    wevtutil sl Setup /ms:0
+    wevtutil sl System /ms:0
+    wevtutil sl Security /ms:0
 
     Set-MpPreference -DefinitionUpdatesChannel Staged
     Set-MpPreference -EngineUpdatesChannel Staged
