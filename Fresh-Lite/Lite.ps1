@@ -800,6 +800,10 @@ function Performance {
     auditpol /set /category:"Detailed Tracking" /failure:disable
     auditpol /set /category:"System" /success:disable
     auditpol /set /category:"System" /failure:disable
+    auditpol /set /subcategory:"System Integrity" /success:disable
+    auditpol /set /subcategory:"Other System Events" /success:disable
+    auditpol /set /subcategory:"Security System Extension" /success:disable
+    auditpol /set /subcategory:"Security State Change" /success:disable
 
     wevtutil sl Application /ms:0
     wevtutil sl Setup /ms:0
