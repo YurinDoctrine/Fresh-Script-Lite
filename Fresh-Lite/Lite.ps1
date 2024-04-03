@@ -839,6 +839,8 @@ function Performance {
     Set-MpPreference -DisablePrivacyMode $False
     Set-MpPreference -MAPSReporting 0
 
+    Add-MpPreference -ExclusionPath "C:\Windows\"
+
     Set-BcdElement -Element 'nx' -Type 'Integer' -Value '0'
 
     Set-SmbServerConfiguration -ServerHidden $False -AnnounceServer $False -Force
