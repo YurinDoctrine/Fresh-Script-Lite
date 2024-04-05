@@ -839,7 +839,7 @@ function Performance {
     Set-MpPreference -DisablePrivacyMode $False
     Set-MpPreference -MAPSReporting 0
 
-    Add-MpPreference -ExclusionPath "C:\Windows\"
+    Add-MpPreference -ExclusionPath "C:\Windows","C:\Program Files","C:\Program Files (x86)"
 
     Set-BcdElement -Element 'nx' -Type 'Integer' -Value '0'
 
