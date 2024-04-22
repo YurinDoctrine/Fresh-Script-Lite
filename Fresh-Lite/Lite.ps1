@@ -579,6 +579,11 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows" -Name "DwmInputUsesIoCompletionPort" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows" -Name "EnableDwmInputProcessing" -PropertyType DWord -Value 0 -Force
 
+    if (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Power")) {
+        New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Power" -Force
+    }
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Power" -Name "TransitionLatency" -PropertyType DWord -Value 0 -Force
+
     if (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\QoS")) {
         New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\QoS" -Force
     }
