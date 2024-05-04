@@ -629,6 +629,16 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Processor" -Name "CPPCEnable" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Processor" -Name "Cstates" -PropertyType DWord -Value 0 -Force
 
+    if (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\AmdPPM\Parameters")) {
+        New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\AmdPPM\Parameters" -Force
+    }
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\AmdPPM\Parameters" -Name "UserPresencePredictionEnabled" -PropertyType DWord -Value 0 -Force
+
+    if (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\IntelPPM\Parameters")) {
+        New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\IntelPPM\Parameters" -Force
+    }
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\IntelPPM\Parameters" -Name "UserPresencePredictionEnabled" -PropertyType DWord -Value 0 -Force
+
     if (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\DisplayPostProcessing")) {
         New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\DisplayPostProcessing" -Force
     }
