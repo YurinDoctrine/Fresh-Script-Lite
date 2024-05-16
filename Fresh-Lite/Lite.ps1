@@ -945,7 +945,7 @@ function Network {
     set-netoffloadglobalsetting -ScalingHeuristics Disabled
 
     Get-NetAdapter -IncludeHidden | Set-NetIPInterface -WeakHostSend Enabled -WeakHostReceive Enabled
-    Get-NetAdapter -IncludeHidden | Get-DnsClientServerAddress | Set-DnsClientServerAddress -ServerAddresses ("176.103.130.130", "176.103.130.131")
+    Get-NetAdapter -IncludeHidden | Get-DnsClientServerAddress | Set-DnsClientServerAddress -ServerAddresses ("94.140.14.15", "94.140.15.16")
 }
 Network
 function Memory {
