@@ -583,6 +583,8 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows" -Name "DesktopHeapLogging" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows" -Name "DwmInputUsesIoCompletionPort" -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows" -Name "EnableDwmInputProcessing" -PropertyType DWord -Value 0 -Force
+    New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options" -Name TracingFlags -PropertyType DWord -Value 0 -Force
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl" -Name LastCrashTime -PropertyType DWord -Value 0 -Force
 
     if (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Power")) {
         New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Power" -Force
@@ -817,6 +819,8 @@ function Performance {
     Enable-MMAgent -ApplicationPreLaunch
     Disable-MMAgent -MemoryCompression
     Disable-MMAgent -PageCombining
+
+    setx /M DBGENG_NO_BUGCHECK_ANALYSIS TRUE
 
     auditpol /set /category:"Account Logon" /success:disable
     auditpol /set /category:"Account Logon" /failure:disable
