@@ -509,23 +509,7 @@ function Performance {
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name DisableExceptionChainValidation -Type "DWORD" -Value "1" -Force
     New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\kernel" -Name KernelSEHOPEnabled -PropertyType DWord -Value 0 -Force
     New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\kernel" -Name ForceForegroundBoostDecay -PropertyType DWord -Value 0 -Force
-    New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\kernel" -Name DisableExceptionChainValidation -PropertyType DWord -Value 1 -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name RebalanceMinPriority -Type "DWORD" -Value "1" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name IdealNodeRandomized -Type "DWORD" -Value "0" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name GlobalTimerResolutionRequests -Type "DWORD" -Value "0" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name DisableLowQosTimerResolution -Type "DWORD" -Value "1" -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name ThreadDpcEnable -Type "DWORD" -Value "1" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name MinimumDpcRate -Type "DWORD" -Value "3" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name VerifierDpcScalingFactor -Type "DWORD" -Value "1" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name DisableTsx -Type "DWORD" -Value "1" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name EnablePerCpuClockTickScheduling -Type "DWORD" -Value "0" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name HeteroSchedulerOptions -Type "DWORD" -Value "0" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name SerializeTimerExpiration -Type "DWORD" -Value "1" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name MaximumSharedReadyQueueSize -Type "DWORD" -Value "1" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name MinDynamicTickDuration -Type "DWORD" -Value "1000" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name DpcWatchdogProfileOffset -Type "DWORD" -Value "0" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name DistributeTimers -Type "DWORD" -Value "1" -Force
-    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name AlwaysTrackIoBoosting -Type "DWORD" -Value "0" -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Name TtmEnabled -Type "DWORD" -Value "0" -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Name FlushPolicy -Type "DWORD" -Value "1" -Force
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\pci\Parameters" -Name ASPMOptOut -Type "DWORD" -Value "1" -Force
@@ -811,10 +795,6 @@ function Performance {
     regsvr32.exe /s wucltux.dll
     regsvr32.exe /s muweb.dll
     regsvr32.exe /s wuwebv.dll
-
-    Enable-WindowsOptionalFeature -Online -FeatureName NetFx4-AdvSrvs -All -NoRestart
-    Enable-WindowsOptionalFeature -Online -FeatureName NetFx4Extended-ASPNET45 -All -NoRestart
-    Enable-WindowsOptionalFeature -Online -FeatureName NetFx3 -All -NoRestart
 
     Enable-MMAgent -ApplicationPreLaunch
     Disable-MMAgent -MemoryCompression
